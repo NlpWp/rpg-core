@@ -2,89 +2,52 @@ package RPG.Equipment;
 
 import RPG.core.Character;
 import RPG.item.armor.Armor;
+import RPG.item.armor.ArmorSlot;
 import RPG.item.weapon.Weapon;
 
+import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.Map;
+
 public class Equipment {
-    private Character character;
+    private final Character character;
+    private final Map<ArmorSlot, Armor> armorSlot = new EnumMap<>(ArmorSlot.class);
     private Weapon weapon;
-    private Armor helmet;
-    private Armor chest;
-	private Armor gloves;
-	private Armor boots;
 
     public Equipment(Character character) {
         this.character = character;
     }
 
-    public void equipWeapon(Weapon newWeapon){
-        if(weapon != null){
+    public void equipWeapon(Weapon newWeapon) {
+        if (weapon != null) {
             weapon.removeFrom(character);
         }
-            weapon = newWeapon;
-            weapon.applyTo(character);
+        weapon = newWeapon;
+        weapon.applyTo(character);
     }
-	public void unequipWeapon(){
-        if(weapon == null){
+
+    public void unequipWeapon() {
+        if (weapon == null) {
             return;
         }
         weapon.removeFrom(character);
         weapon = null;
     }
-    public void equipHelmet(Armor newHelmet){
-        if(helmet != null){
-            helmet.removeFrom(character);
+
+    public void equipArmor(Armor armor) { //надеть броню в правильный слот, заменив старую
+        ArmorSlot slot = armor.getSlot();
+        Armor oldArmor = armorSlot.get(slot);
+        if (oldArmor != null) {
+            oldArmor.removeFrom(character);
         }
-            helmet = newHelmet;
-            helmet.applyTo(character);
-    }
-    public void equipChest(Armor newChest){
-        if(chest != null){
-            chest.removeFrom(character);
-        }
-        chest = newChest;
-        chest.applyTo(character);
-    }
-    public void equipGloves(Armor newGloves){
-        if(gloves != null){
-            gloves.removeFrom(character);
-        }
-        gloves = newGloves;
-        gloves.applyTo(character);
-    }
-    public void equipBoots(Armor newBoots){
-        if(boots != null){
-            boots.removeFrom(character);
-        }
-        boots = newBoots;
-        boots.applyTo(character);
+        armorSlot.put(slot, armor);
+        armor.applyTo(character);
     }
 
-    public void unequipChest(){
-        if(chest == null){
-            return;
+    public void unequipArmor(ArmorSlot slot) { // снять броню из слота, если она там есть
+        Armor armor = armorSlot.remove(slot);
+        if(armor != null){
+            armor.removeFrom(character);
         }
-        chest.removeFrom(character);
-        chest = null;
-    }
-    public void unequipHelmet(){
-        if(helmet == null){
-            return;
-        }
-        helmet.removeFrom(character);
-        helmet = null;
-    }
-    public void unequipGloves(){
-        if(gloves == null){
-            return;
-        }
-        gloves.removeFrom(character);
-        gloves = null;
-    }
-    public void unequipBoots(){
-        if(boots == null){
-            return;
-        }
-        boots.removeFrom(character);
-        boots = null;
     }
 }

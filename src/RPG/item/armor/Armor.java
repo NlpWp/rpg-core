@@ -3,7 +3,7 @@ package RPG.item.armor;
 import RPG.core.Character;
 import RPG.item.Item;
 
-public class Armor extends Item {
+public abstract class Armor extends Item {
     protected int defenseBonus;
     protected int hpBonus;
 
@@ -12,6 +12,7 @@ public class Armor extends Item {
         this.defenseBonus = defenseBonus;
         this.hpBonus = hpBonus;
     }
+    public abstract ArmorSlot getSlot();
 
     @Override
     public void applyTo(Character character) {
