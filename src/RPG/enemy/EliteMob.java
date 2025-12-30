@@ -1,14 +1,14 @@
-package RPG.enemy;
+    package RPG.enemy;
 
-import RPG.core.Enemy;
+    import RPG.core.Enemy;
 
-public class EliteMob extends Enemy {
-    public EliteMob(String name) {
-        super(name);
+    public class EliteMob extends Enemy {
+        public EliteMob(String name) {
+            super(name);
+        }
+
+        @Override
+        protected void onDeath() {
+
+        }
     }
-
-    @Override
-    protected void onDeath() {
-
-    }
-}

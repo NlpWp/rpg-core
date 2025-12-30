@@ -5,6 +5,8 @@ import RPG.Equipment.Equipment;
 import RPG.core.Player;
 import RPG.enemy.Boss;
 import RPG.enemy.Mob;
+import RPG.inventory.Inventory;
+import RPG.item.Item;
 import RPG.item.armor.*;
 import RPG.item.armor.leatherSet.LeatherBoots;
 import RPG.item.armor.leatherSet.LeatherChest;
@@ -16,11 +18,31 @@ import RPG.skills.Skill;
 
 public class Game {
     public static void main(String[] args){
+        Player voin = new Player("vovasik", 5, 300);
+
+        voin.pickUp(new IronSword());
+        voin.pickUp(new LeatherBoots());
+        voin.pickUp(new LeatherHelmet());
+
+        System.out.println("ИНВЕНТАРЬ:");
+        voin.getInventory().print();
+
+        System.out.println("\nОДЕВАЕМ 1:");
+        voin.equipByIndex(1);
+
+        voin.getEquipment().printEquipped();
+        voin.getInventory().print();
+
+        System.out.println("\nОДЕВАЕМ 2:");
+        voin.equipByIndex(2);
+
+        voin.getEquipment().printEquipped();
+        voin.getInventory().print();
+
+    }
+    public void testiki(){
         Player voin = new Player("vovasik", 5,300);
-
         Equipment equipment = new Equipment(voin);
-
-
         System.out.println("НАЧАЛО ПРОВЕРКИ ОРУЖИЯ \uD83D\uDDE1\uFE0F  ");
         System.out.println("\uD83D\uDDE1\uFE0F \uD83D\uDDE1\uFE0F \uD83D\uDDE1\uFE0F \uD83D\uDDE1\uFE0F ");
         equipment.equipWeapon(new IronSword());

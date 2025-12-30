@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Inventory {
-    private List<Item> items;
+    private final List<Item> items;
 
     public Inventory() {
         items = new ArrayList<>();
@@ -19,19 +19,39 @@ public class Inventory {
         items.add(item);
     }
 
-    public void removeItem(Item item){ //удалить итем если не пустой
+    public boolean remove(Item item){ // возращает получилось ли удалить
         if(item == null){
-            return;
+            return false;
         }
-        items.remove(item);
+        return items.remove(item);
     }
 
     public boolean contains(Item item){
+        if(item == null){
+            return false;
+        }
         return items.contains(item);
     }
 
+    public Item getItemByIndex(int index){
+        if (index < 1 || index > items.size()) return null;
+        return items.get(index -1);
+
+    }
+
+    public void print(){ // просто вывод инвентаря
+        if(items.isEmpty()){
+            System.out.println("ИНВЕНТАРЬ ПУСТОЙ");
+            return;
+        }
+        int index = 1;
+        for(Item i : items){
+            System.out.println(index++ + ") " + i.getItemsName());
+        }
+    }
+
     public List<Item> getItems() {
-        return items;
+        return new ArrayList<>(items);
     }
 
 }
