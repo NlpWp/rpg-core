@@ -1,11 +1,10 @@
 package RPG.core;
 
 import RPG.Equipment.Equipment;
+import RPG.Equipment.EquipmentSlot;
 import RPG.inventory.Inventory;
+import RPG.item.Equipable;
 import RPG.item.Item;
-import RPG.item.armor.Armor;
-import RPG.item.armor.ArmorSlot;
-import RPG.item.weapon.Weapon;
 
 public class Player extends Character {
     private int exp;
@@ -49,34 +48,20 @@ public class Player extends Character {
     }
 
     public void equip(Item item) { //Игрок надевает предмет, но сам Player не должен знать детали слотов
-        if (item == null) return;
-        if (!inventory.contains(item)) return;
-        if (item instanceof Armor armor) {
-            equipment.equipArmor(armor);
-            inventory.remove(item);
-        } else if (item instanceof Weapon weapon) {
-            equipment.equipWeapon(weapon);
-            inventory.remove(item);
-        }
+        if (item == null) return; // проверка на нуль
+        if (!(item instanceof Equipable))return; // Если item НЕ Equipable
+        if (!inventory.contains(item)) return; //Если предмета нет в инвентаре
+        equipment.equip( (Equipable) item); // Передать предмет в Equipment
+        inventory.remove(item); // удалить предмет из инвентаря
     }
 
     public void unequip(Item item) { // Игрок снимает предмет, но сам Player не должен знать детали слотов
         if (item == null) return; // проверям полученный айтем не равен нулю
-        if (!equipment.isItemEquipped(item)) return; // Проверить, что предмет НЕ надет
-        if (item instanceof Armor armor) { //
-            equipment.unequipArmor(armor.getSlot());
-            inventory.addItem(item);
-        } else if (item instanceof Weapon) {
-            equipment.unequipWeapon();
-            inventory.addItem(item);
-        }
-    }
+        if (!(item instanceof Equipable))return; // Проверка, что предмет экипируемый
+        if (!equipment.isItemEquipped(item)) return; // Проверка, что предмет реально надет
 
-    public void equipArmor(Armor armor) {
-        if (!inventory.contains(armor)) {
-            return;
-        }
-        equipment.equipArmor(armor);
+            equipment.unequip(((Equipable) item).getSlot()); // Снятие предмета
+            inventory.addItem(item); // Возврат предмета в инвентарь
     }
 
     public void equipByIndex(int index) { //одеваем по индексу
@@ -108,30 +93,19 @@ public class Player extends Character {
     }
 
     public boolean unequipByIndex(int index) { // снимаем предмет по индексу
-        if (index < 1 || index > 5) { // ПРОВЕРКА НА ТО ЧТО У НАС 1 ОРУЖИЕ И 4 ШМОТКИ
-            System.out.println("❌НЕВЕРНЫЙ НОМЕР ПРДЕМЕТА ❌");
+        if(index < 1 || index > EquipmentSlot.values().length){ //Проверка индекса чтобы не вышел за рамки
+            System.out.println("⚠️НЕРПАВИЛЬНЫЙ ИНДЕКС⚠️");
             return false;
         }
-        if (index <= 4) { // ЕСЛИ ПОПОДАЕТ В ДИАПОЗОН ВЕЩЕЙ
-            ArmorSlot slot = ArmorSlot.values()[index - 1]; // СМОТРИМ ЧТО ЗА ВЕЩЬ ХРАНИТСЯ В ИНДЕКСЕ
-            if (!equipment.hasArmorInSlot(slot)) { // Проверка, что в слоте вообще что-то есть
-                System.out.println("⚠️ В этом слоте ничего не надето");
-                return false;
-            }
-            equipment.unequipArmor(slot); // СНИМАЕМ ЭТУ ВЕЩЬ
-            System.out.println("✅ Предмет снят: " + slot);
-            return true;
+        EquipmentSlot slot = EquipmentSlot.values()[index - 1]; // Получаем слот по индексу
+        if(!equipment.hasItemInSlot(slot)){ //Проверяем, есть ли предмет в этом слоте
+            System.out.println("⚠️ В этом слоте ничего не надето");
+            return false;
         }
-        if (index == 5) { // У НАС В 5 СЛОТЕ ЭТО ОРУЖИЕ
-            if (!equipment.hasWeapon()) { // одето ли это оружие?
-                System.out.println("⚠️ Оружие не надето");
-                return false;
-            }
-            equipment.unequipWeapon(); // СНИМАЕМ ОРУЖИЕ
-            System.out.println("✅ ВЫ СНЯЛИ ОРУЖИЕ");
-            return true;
-        }
-        return false;
+        Item item = equipment.getItemInSlot(slot); //Забираем предмет из слота
+        equipment.unequip(slot); // Снимаем предмет
+        inventory.addItem(item); // Кладём предмет в инвентарь
+        return true;
     }
 
     @Override

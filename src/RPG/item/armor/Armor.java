@@ -1,9 +1,12 @@
 package RPG.item.armor;
 
+import RPG.Equipment.Equipment;
+import RPG.Equipment.EquipmentSlot;
 import RPG.core.Character;
+import RPG.item.Equipable;
 import RPG.item.Item;
 
-public abstract class Armor extends Item {
+public abstract class Armor extends Item implements Equipable {
     protected int defenseBonus;
     protected int hpBonus;
 
@@ -12,7 +15,7 @@ public abstract class Armor extends Item {
         this.defenseBonus = defenseBonus;
         this.hpBonus = hpBonus;
     }
-    public abstract ArmorSlot getSlot();
+    public abstract EquipmentSlot getSlot();
 
     @Override
     public void applyTo(Character character) {

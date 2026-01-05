@@ -1,89 +1,97 @@
 package RPG.Equipment;
 
 import RPG.core.Character;
+import RPG.item.Equipable;
 import RPG.item.Item;
 import RPG.item.armor.Armor;
-import RPG.item.armor.ArmorSlot;
 import RPG.item.weapon.Weapon;
 
 import java.util.EnumMap;
-import java.util.HashMap;
 import java.util.Map;
 
-public class Equipment {
+public class Equipment { //применяет
     private final Character character;
-    private final Map<ArmorSlot, Armor> armorSlot = new EnumMap<>(ArmorSlot.class);
-    private Weapon weapon;
+    private final Map<EquipmentSlot, Equipable> itemSlot = new EnumMap<>(EquipmentSlot.class);
 
     public Equipment(Character character) {
         this.character = character;
     }
 
-    public void equipWeapon(Weapon newWeapon) {
-        if (weapon != null) {
-            weapon.removeFrom(character);
-        }
-        weapon = newWeapon;
-        weapon.applyTo(character);
-    }
-
-    public void unequipWeapon() {
-        if (weapon == null) {
+    public void equip(Equipable item) { // надеть слот заменив старый
+        if (item == null) {
             return;
         }
-        weapon.removeFrom(character);
-        weapon = null;
-    }
-
-    public void equipArmor(Armor armor) { //надеть броню в правильный слот, заменив старую
-        ArmorSlot slot = armor.getSlot();
-        Armor oldArmor = armorSlot.get(slot);
-        if (oldArmor != null) {
-            oldArmor.removeFrom(character);
+        EquipmentSlot slot = item.getSlot();
+        Equipable oldItem = itemSlot.get(slot);
+        if (oldItem == item) {
+            return;
         }
-        armorSlot.put(slot, armor);
-        armor.applyTo(character);
+        if (oldItem != null) {
+            oldItem.removeFrom(character);
+        }
+        itemSlot.put(slot, item);
+        item.applyTo(character);
+
     }
 
-    public void unequipArmor(ArmorSlot slot) { // снять броню из слота, если она там есть
-        Armor armor = armorSlot.remove(slot);
-        if (armor != null) {
-            armor.removeFrom(character);
+    public void unequip(EquipmentSlot slot) { //снять прдемет
+        Equipable oldItem = itemSlot.remove(slot);
+        if (oldItem != null) {
+            oldItem.removeFrom(character);
         }
     }
 
-    public boolean isItemEquipped(Item item) { // какой предмет одетеваеться
+    public boolean isItemEquipped(Item item) { // какой предмет сейчас одет?
         if (item == null) {
             return false;
         }
-        if (item == weapon) {
-            return item == weapon;
+        if (!(item instanceof Equipable equipable)) {
+            return false;
         }
-        if (item instanceof Armor) {
-            Armor armor = (Armor) item;
-            ArmorSlot slot = armor.getSlot();
-            Armor equipped = armorSlot.get(slot);
-            return equipped == item;
+
+        EquipmentSlot slot = equipable.getSlot();
+        return itemSlot.get(slot) == equipable;
+    }
+
+    public boolean hasItemInSlot(EquipmentSlot slot) {
+        if (slot == null) {
+            return false;
+        }
+        if (itemSlot.containsKey(slot)) {
+            return true;
         }
         return false;
     }
-    public boolean hasArmorInSlot(ArmorSlot slot) { //проверка брони в слоте
-        return armorSlot.containsKey(slot);
-    }
 
-    public boolean hasWeapon() { //проверка оружия
-        return weapon != null;
-    }
-
-    public void printEquipped(){
-        System.out.println("ОДЕТО: \uD83D\uDEE1\uFE0F");
-
-        for (ArmorSlot slot: ArmorSlot.values()){
-            Armor armor = armorSlot.get(slot);
-            String name = (armor != null) ? armor.getItemsName() : "--------";
-            System.out.println(slot + " - " + name);
+    public Item getItemInSlot(EquipmentSlot slot) {
+        if (slot == null){
+            return null;
         }
-        String weaponName = (weapon != null) ? weapon.getItemsName() : "------";
-        System.out.println("WEAPON " + weaponName);
+        if(itemSlot.get(slot) == null){
+            return null;
+        }
+        Item item = (Item) itemSlot.get(slot);
+        return item;
+    }
+
+    public void printEquipped() { // вывод
+        System.out.println("ОДЕТО: 🛡️");
+
+        EquipmentSlot[] slots = EquipmentSlot.values();
+
+        for (int i = 0; i < slots.length; i++) {
+            EquipmentSlot slot = slots[i];
+            Equipable equipable = itemSlot.get(slot);
+
+            String name;
+            if (equipable != null) {
+                Item item = (Item) equipable;
+                name = item.getItemsName();
+            } else {
+                name = "--------";
+            }
+
+            System.out.println((i + 1) + ") " + slot + " - " + name);
+        }
     }
 }

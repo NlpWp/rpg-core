@@ -4,7 +4,7 @@ import RPG.item.Item;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Inventory {
+public class Inventory { // хранит
     private final List<Item> items;
 
     public Inventory() {

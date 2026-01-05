@@ -1,7 +1,7 @@
 package RPG.item.armor.leatherSet;
 
 import RPG.item.armor.Armor;
-import RPG.item.armor.ArmorSlot;
+import RPG.Equipment.EquipmentSlot;
 
 public class LeatherGloves extends Armor {
 
@@ -10,7 +10,7 @@ public class LeatherGloves extends Armor {
     }
 
     @Override
-    public ArmorSlot getSlot() {
-        return ArmorSlot.GLOVES;
+    public EquipmentSlot getSlot() {
+        return EquipmentSlot.GLOVES;
     }
 }
